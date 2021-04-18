@@ -216,7 +216,7 @@ start producer in one terminal:
 
 	$ kafka-console-producer.sh --brr-list 127.0.0.1:9092 --topic first_topic
 
-start group consumer in another terminal; by default no messages will come but when we will write a message in producer and produce, apparently it will appear in consumer.
+start group consumer in another terminal;<br> by default no messages will come but when we will write a message in producer and produce, apparently it will appear in consumer.
 
 	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-firstapplication
 
@@ -268,16 +268,16 @@ start group consumer in another terminal; by default no messages will come but w
 		aqua
 
 
-in above example you can see that we have producer and 3 consumer. <br> when there is only one consumer, all messages were consumed by only one consumer. <br> but when we have 3 active consumer of same group. since we have 3 partition group so messages are split between consumers. that means each consumer can read from 3 partition.
+in above example you can see that we have 1 producer and 3 consumer. <br> when there is only one consumer, all messages were consumed by same. <br> when we have 3 active consumer of same group. since we have 3 partition group so messages are split between consumers, that means each consumer can read from 3 partition.
 
-<br>we didn't did anything. consumer group rebalance and share the load. 
-<br>if consumer will be down then message will be shared between two active consumer.
+<br>we didn't did any special configuration for this load balancing of messages, consumer group itself rebalance and share the load. 
+<br>if 1 consumer will be down then message will be shared between 2 active consumer.
 
 -------------------------------------------------------------------------------	
 
 **Example 2:**
 
-execute below command 1st time
+execute below command **1st** time
 
 	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-second-application --from-beginning
 		hello amit
@@ -310,37 +310,35 @@ execute below command 1st time
 		yellow
 
 
-execute same above command 2nd time and we received 0 messages, even though we mention "--from-beginning". 
+execute same above command **2nd** time and we received 0 messages, even though we mention "--from-beginning". 
 
-because we specified the group so the offset has been committed in kafka, so it says, "my-second-application" group has read all the message till message number "N" so now it gona read only new messages from message number 29. so "--from-beginning" is not taking in account any more.
+because we specified the group so the offset has been committed in kafka.<br> So it says, "my-second-application" group has read all the message till message number "N" so now it gonna read only new messages from message number 29.<br> so "--from-beginning" is not taking in account any more.
 
 
-	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-second-application --from-beginning
-
-so we can remove "--from-beginning" and it work as ususal and read all new messages.
+<br>so we can remove ***"--from-beginning"*** and it work as ususal and read all new messages.
 
 	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-second-application
 
 
-So if we stop the consumer application and keep producing messages and relaunch the consumer application with the same application, we can see it only read the message which we just produced.
+So if we stop the consumer application and keep producing messages and later relaunch the consumer application with the same application, we can see it only read the message which we just produced.
 
 
 	$ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic first_topic
-	>hello
-	>how r u
-	>where r u
-	>red
-	>blue
-	>green
-	>orange
-	>yellow
-	>aqua
-	>maroon
-	>rekjhgkjfgk
-	>abcd
-	>efgh
-	>ijkl
-	>
+		>hello
+		>how r u
+		>where r u
+		>red
+		>blue
+		>green
+		>orange
+		>yellow
+		>aqua
+		>maroon
+		>rekjhgkjfgk
+		>abcd
+		>efgh
+		>ijkl
+		>
 
 relaunched the kafka consumer with group name after message is produced, and it looks like:
 
