@@ -36,6 +36,7 @@ $ kafka-topics.sh
 		$ $ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic first_topic --create --partitions 3 --replication-factor 2		error: InvalidReplicationFactorException: Replication factor: 2 larger than available brokers: 1. 
 
 **create topics:**
+		
 		$ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic first_topic --create --partitions 3 --replication-factor 1			=> Replication factor can't be greater than number of brokers
 
 		$ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic second_topic --create --partitions 6 --replication-factor 1
@@ -45,14 +46,17 @@ $ kafka-topics.sh
 All of Kafka's command line tools have additional options: run the kafka-topics.sh command without any arguments to display usage information. For example, it can also show you details such as the partition count of the new topic:
 
 **to get list of existing topics:**
+		
 		$ kafka-topics.sh --zookeeper 127.0.0.1:2181 --list
 
 **topic details:**
+		
 		$ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic first_topic --describe
 		$ bin/kafka-topics.sh --describe --topic quickstart-events --bootstrap-server localhost:9092
 
 
 **topic delete:**
+		
 		$ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic second_topic --delete
 		Topic second_topic is marked for deletion.
 		
