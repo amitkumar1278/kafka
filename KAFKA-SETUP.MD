@@ -1,37 +1,36 @@
 # LINUX: Download and Setup Kafka path
 
-**Step 1:** 
-=>	Check if java is install
+**Step 1:** Check if java is install
 		
 		$ java -version
 
-=>	if java is not installed use below commands to install openjdk:
+if java is not installed use below commands to install openjdk:
 		
 		$ sudo apt install openjdk-{{version}}-jdk 
 
--------------------------------------------------------------------------------		
-**Step 2:** 
-=>	Download & Extract the Kafka binaries from: https://kafka.apache.org/downloads.html
+-------------------------------------------------------------------------------	
 
-===============================================================================
-**Step 3:** 
-=>	Go to download directory in terminal and execute below commands:
+**Step 2:** Download & Extract the Kafka binaries from: https://kafka.apache.org/downloads.html
+
+-------------------------------------------------------------------------------	
+	
+**Step 3:** Go to download directory in terminal and execute below commands:
 		
 		$ mv Downloads/kafka_2.13-2.7.0.tgz .
 		$ tar -xzf kafka_2.13-2.7.0.tgz
 		$ cd kafka_2.13-2.7.0/
 		$ bin/kafka-topics.sh			=>	this command will show list of available commands if java is installed;	Try Kafka commands using bin/kafka-topics.sh;
 		
-===============================================================================
-**Step 4:** 
-=> Edit PATH to include Kafka (in ~/.bashrc for example)
+-------------------------------------------------------------------------------		
+
+**Step 4:** Edit PATH to include Kafka (in ~/.bashrc for example)
+		
 		$ nano .bashrc		
 			export PATH="$PATH:/your/path/to/your/kafka/bin"
 			export PATH=/home/amit/kafka_2.13-2.7.0/bin:$PATH
 			
-===============================================================================
-**Step 5:** 
-=>	in new terminal configure/start zookeeper 
+-------------------------------------------------------------------------------		
+**Step 5:** in new terminal configure/start zookeeper 
 		
 		$ cd kafka_2.13-2.7.0/
 		$ mkdir data 
@@ -46,8 +45,9 @@ Open a new terminal and run below commands to confirm:
 		$ cd kafka_2.13-2.7.0/
 		$ ls data/zookeeper/			=> check if new version is created like "version-2".
 		
-===============================================================================		
-**Step 6: in new terminal Configure/Start Kafka**
+-------------------------------------------------------------------------------		
+
+**Step 6:** in new terminal Configure/Start Kafka
 		
 		$ cd kafka_2.13-2.7.0/
 		$ mkdir data/kafka
@@ -62,7 +62,8 @@ Open a new terminal and run below commands to confirm:
 		
 		$ cd kafka_2.13-2.7.0/
 		$ ls data/kafka/			=> few files(5) should be created by kafka.
-===============================================================================					
+-------------------------------------------------------------------------------		
+
 
 
 

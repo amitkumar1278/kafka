@@ -1,7 +1,7 @@
 # KAFKA Operations
 
 ## START THE KAFKA ENVIRONMENT
-==================================================================
+-------------------------------------------------------------------------------		
 
 NOTE: Your local environment must have Java 8+ installed.
 
@@ -18,7 +18,7 @@ Open another terminal session and run:
 Once all services have successfully launched, you will have a basic Kafka environment running and ready to use.
 
 ## CREATE A TOPIC TO STORE YOUR EVENTS
-==================================================================
+-------------------------------------------------------------------------------		
 
 Kafka is a distributed event streaming platform that lets you read, write, store, and process events (also called records or messages in the documentation) across many machines.
 
@@ -26,11 +26,12 @@ Example events are payment transactions, geolocation updates from mobile phones,
 
 So before you can write your first events, you must create a topic. Open another terminal session and run:
 
-$ kafka-topics.sh
+	$ kafka-topics.sh
 
 ### create topics
 
 **command to understand some parameter**
+
 		$ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic first_topic --create		=> error 'Missing required argument "[partitions]"'
 		$ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic first_topic --create --partitions 3		=> error:  Missing required argument "[replication-factor]"
 		$ $ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic first_topic --create --partitions 3 --replication-factor 2		error: InvalidReplicationFactorException: Replication factor: 2 larger than available brokers: 1. 
@@ -61,10 +62,12 @@ All of Kafka's command line tools have additional options: run the kafka-topics.
 		Topic second_topic is marked for deletion.
 		
 
-Topic:quickstart-events  PartitionCount:1    ReplicationFactor:1 Configs:
+Topic:quickstart-events  PartitionCount:1    ReplicationFactor:1 Configs:<br>
 Topic: quickstart-events Partition: 0    Leader: 0   Replicas: 0 Isr: 0
 
 		
-===============================================================================
 
 ## Kafka Console producer ClI	
+-------------------------------------------------------------------------------		
+
+
