@@ -21,6 +21,7 @@ Open another terminal session and run:
 Once all services have successfully launched, you will have a basic Kafka environment running and ready to use.
 
 ## CREATE A TOPIC TO STORE YOUR EVENTS
+
 -------------------------------------------------------------------------------		
 
 Kafka is a distributed event streaming platform that lets you read, write, store, and process events (also called records or messages in the documentation) across many machines.
@@ -67,11 +68,10 @@ All of Kafka's command line tools have additional options: run the kafka-topics.
 		Topic: quickstart-events Partition: 0    Leader: 0   Replicas: 0 Isr: 0
 
 		
-<br>
-## Kafka Console producer ClI	
--------------------------------------------------------------------------------		
 
-To send data to topic:
+## Kafka Console producer ClI	
+
+-------------------------------------------------------------------------------		
 
 	$ kafka-console-producer.sh		=> to access documentation
 	$ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic first_topic		=> if its well, you will see a ">" in right hand side, means it's ready to produce message.
@@ -89,16 +89,16 @@ To send data to topic:
 		>^C
 	
 
-getting error in below, because topic was not created.
+getting warning in below, because topic was not created.
 	
-	$ $ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic new_topic
+	$ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic new_topic
 		>hey this topic does not exist
 		[2021-04-18 19:07:34,618] WARN [Producer clientId=console-producer] Error while fetching metadata with correlation id 3 : {new_topic=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient)
 		[2021-04-18 19:07:34,724] WARN [Producer clientId=console-producer] Error while fetching metadata with correlation id 4 : {new_topic=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient)
 	
 	
 	
-=> for second topic no warning, because it was created by Kafka with default configuration after first topics execution. but earlier no leader was elected, so we got excpetion.
+for second topic no warning, because it was created by Kafka with default configuration after first message was produced. but earlier no leader was elected, so we got warning.
 		
 	$ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic new_topic
 		>hey this topic does not exist
@@ -107,9 +107,7 @@ getting error in below, because topic was not created.
 		>another message
 		>^C
 	
-	
-	
-	
+
 to confirm new topic created exit producer and run:
 
 	$ kafka-topics.sh --zookeeper 127.0.0.1:2181 --list
@@ -117,6 +115,7 @@ to confirm new topic created exit producer and run:
 		new_topic
 
 this new topic has default configuration which we don't want usually. by default, PartitionCount: 1
+
 **Suggestion**, Always create topic before producing.
 	
 	$ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic new_topic --describe
@@ -152,27 +151,26 @@ running with new config:
 
 
 ## Kafka Console Consumer ClI	
+
 -------------------------------------------------------------------------------	
 
 
 	$ kafka-console-consumer.sh		=> documentation
 	
-if we run below command we may get nothing, even though we wrote few messages.<br> it does not read all the topic it only read from that point you launch it	and it only intercept only new messages.
+if we run below command we may get nothing, even though we wrote few messages.<br> it does not read all the topic it only read from that point you launch it	and it intercept only new messages.
 
 	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic
 	
-to understand this properly, 
-
-run below producer command in one terminal:
+to understand this properly, run below producer command in one terminal:
 
 	$ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic first_topic
 	
 
-run below consume command in another terminal:
+run below consumer command in another terminal:
 
 	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic
 	
-now whatever message you will write in producer will be consume by consumer, at this point of time Kafka server and Zookeeper should run.
+now whatever message you will write in producer will be consumed by consumer, at this point of time Kafka server and Zookeeper should run.
 
 Terminal 1:
 
@@ -186,8 +184,7 @@ Terminal 2:
 		hi how are you
 
 
-### how do we read all the message in the topic?
-to do so we need to run below command
+### to read all the message in the topic run below command:
 
 	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --from-beginning
 		hello amit
@@ -201,9 +198,7 @@ to do so we need to run below command
 		some message that is acked
 		hi how are you
 
-here we asked console consumer to the beginning of the topic and tell us what there is.
-here you can see, the order of the messages in this consumer is not total. the order is per partition. because "first_topic" was created with 3 partitions, so the order is only guranted at partiotion level. 
-if you try a topic with l partition, you will see total ordering.
+here we asked console consumer to the beginning of the topic and tell us what there is.<br>here you can see, the order of the messages in this consumer is not total. the order is per partition. because "first_topic" was created with 3 partitions, so the order is only guranted at partiotion level. <br>if you try a topic with l partition, you will see total ordering.
 
 
 
@@ -212,13 +207,152 @@ if you try a topic with l partition, you will see total ordering.
 
 
 ## Kafka Consumers in Group	
+
 -------------------------------------------------------------------------------	
 
+	$ kafka-console-consumer.sh
+
+start producer in one terminal:
+
+	$ kafka-console-producer.sh --brr-list 127.0.0.1:9092 --topic first_topic
+
+start group consumer in another terminal; by default no messages will come but when we will write a message in producer and produce, apparently it will appear in consumer.
+
+	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-firstapplication
 
 
+-------------------------------------------------------------------------------	
+
+**Example 1:**
+### lets try with one Producer and three consumer of same topic and group.
+
+**Producer 1:**
+
+	$ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic first_topic
+		>hello
+		>how r u
+		>where r u
+		>red
+		>blue
+		>green
+		>orange
+		>yellow
+		>aqua
+		>maroon
+		>
 
 
+**Consumer 1:**
+
+	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-firstapplication
+		hello
+		how r u
+		where r u
+		blue
+		yellow
+
+	
+
+**Consumer 2:**
+
+	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-firstapplication
+		orange
+		maroon
+
+	
+**Consumer 3:**
+
+	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-firstapplication
+		red
+		green
+		aqua
+
+
+in above example you can see that we have producer and 3 consumer. <br> when there is only one consumer, all messages were consumed by only one consumer. <br> but when we have 3 active consumer of same group. since we have 3 partition group so messages are split between consumers. that means each consumer can read from 3 partition.
+
+<br>we didn't did anything. consumer group rebalance and share the load. 
+<br>if consumer will be down then message will be shared between two active consumer.
+
+-------------------------------------------------------------------------------	
+
+**Example 2:**
+
+execute below command 1st time
+
+	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-second-application --from-beginning
+		hello amit
+		fun learning!
+		play 123
+		how 
+		orange
+		hello
+		where r u
+		orange
+		maroon
+		learning kafka
+		just for fun
+		play
+		test 123
+		bue
+		how r u
+		red
+		green
+		aqua
+		awesome kafka
+		just message
+		some message that is acked
+		hi how are you
+		hello new consumer
+		test 1
+		red
+		green
+		blue
+		yellow
+
+
+execute same above command 2nd time and we received 0 messages, even though we mention "--from-beginning". 
+
+because we specified the group so the offset has been committed in kafka, so it says, "my-second-application" group has read all the message till message number "N" so now it gona read only new messages from message number 29. so "--from-beginning" is not taking in account any more.
+
+
+	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-second-application --from-beginning
+
+so we can remove "--from-beginning" and it work as ususal and read all new messages.
+
+	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-second-application
+
+
+So if we stop the consumer application and keep producing messages and relaunch the consumer application with the same application, we can see it only read the message which we just produced.
+
+
+	$ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic first_topic
+	>hello
+	>how r u
+	>where r u
+	>red
+	>blue
+	>green
+	>orange
+	>yellow
+	>aqua
+	>maroon
+	>rekjhgkjfgk
+	>abcd
+	>efgh
+	>ijkl
+	>
+
+relaunched the kafka consumer with group name after message is produced, and it looks like:
+
+	$ kafka-console-consumer.sh  --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-second-application --from-beginning
+		abcd
+		ijkl
+		efgh
+
+
+	
 ## Kafka Consumer Group ClI	
+
 -------------------------------------------------------------------------------	
 
 
@@ -226,6 +360,7 @@ if you try a topic with l partition, you will see total ordering.
 
 
 ## Kafka Console producer ClI	
+
 -------------------------------------------------------------------------------	
 
 
