@@ -64,12 +64,32 @@ Open a new terminal and run below commands to confirm:
 		$ ls data/kafka/			=> few files(5) should be created by kafka.
 -------------------------------------------------------------------------------		
 
+## Conduktor - Kafka GUI
+
+Kafka does not come bundled with a UI, but I have created a software name Conduktor to help you use Kafka visually.
+
+You can download Conduktor here: https://www.conduktor.io/
+
+Conduktor allows you to perform all the administrative tasks on Kafka (such as creating topics, partitions, etc), as well as produce and consume, all from within a desktop application that should work on Windows, Mac, and Linux.
+
+Please look these two pages in cases you're having issues:
+
+Documentation: https://www.conduktor.io/docs
+
+The FAQ for installation issues (at the bottom of the page): https://www.conduktor.io/download
+
+-------------------------------------------------------------------------------		
+
+## KafkaCat
+
+KafkaCat as a replacement for Kafka CLI
+KafkaCat (https://github.com/edenhill/kafkacat) is an open-source alternative to using the Kafka CLI, created by Magnus Edenhill.
+
+if you have any interest in trying it out, recommend reading: https://medium.com/@coderunner/debugging-with-kafkacat-df7851d21968
 
 
 
-
-
-
+-------------------------------------------------------------------------------		
 
 
 

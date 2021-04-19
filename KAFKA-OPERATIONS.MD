@@ -513,12 +513,66 @@ if we start consumer like below in another terminal, we should able to see 6 mes
 	
 	
 	
+-------------------------------------------------------------------------------	
+
 	
+## Good to know		
 	
+- **producer-consumer with keys**: The CLI has many options, but here are the other that are most commonly used:
 	
+**Producer with keys**
+
+	$ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic first_topic --property parse.key=true --property key.separator=,
+		>key,value
+		>another key,another value
+		>just key,
+		>,just value
+		>
+
+**Consumer with keys**
+
+	$ kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 --topic first_topic --from-beginning --property print.key=true --property key.separator=,
+		null,hello amit
+		null,fun learning!
+		null,play 123
+		null,how 
+		null,orange
+		null,hello
+		null,where r u
+		null,orange
+		null,maroon
+		null,abcd
+		another key,another value
+		null,learning kafka
+		null,just for fun
+		null,play
+		null,test 123
+		null,bue
+		null,how r u
+		null,red
+		null,green
+		null,aqua
+		null,rekjhgkjfgk
+		null,ijkl
+		key,value
+		null,awesome kafka
+		null,just message
+		null,some message that is acked
+		null,hi how are you
+		null,hello new consumer
+		null,test 1
+		null,red
+		null,green
+		null,blue
+		null,yellow
+		null,efgh
+		just key,
+		,just value
 	
-	
-	
+-------------------------------------------------------------------------------	
+
+
+
 	
 	
 	
