@@ -1,7 +1,8 @@
 # KAFKA Operations
 
-## START THE KAFKA ENVIRONMENT
 -------------------------------------------------------------------------------		
+
+## START THE KAFKA ENVIRONMENT
 
 NOTE: Your local environment must have Java 8+ installed.
 
@@ -20,9 +21,9 @@ Open another terminal session and run:
 
 Once all services have successfully launched, you will have a basic Kafka environment running and ready to use.
 
-## CREATE A TOPIC TO STORE YOUR EVENTS
-
 -------------------------------------------------------------------------------		
+
+## CREATE A TOPIC TO STORE YOUR EVENTS
 
 Kafka is a distributed event streaming platform that lets you read, write, store, and process events (also called records or messages in the documentation) across many machines.
 
@@ -67,11 +68,12 @@ All of Kafka's command line tools have additional options: run the kafka-topics.
 		Topic:quickstart-events  PartitionCount:1    ReplicationFactor:1 Configs:<br>
 		Topic: quickstart-events Partition: 0    Leader: 0   Replicas: 0 Isr: 0
 
-		
+
+-------------------------------------------------------------------------------		
+
 
 ## Kafka Console producer ClI	
 
--------------------------------------------------------------------------------		
 
 	$ kafka-console-producer.sh		=> to access documentation
 	$ kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic first_topic		=> if its well, you will see a ">" in right hand side, means it's ready to produce message.
@@ -147,12 +149,11 @@ running with new config:
 		Topic: new_topic3	Partition: 2	Leader: 0	Replicas: 0	Isr: 0
 
 
-
+-------------------------------------------------------------------------------	
 
 
 ## Kafka Console Consumer ClI	
 
--------------------------------------------------------------------------------	
 
 
 	$ kafka-console-consumer.sh		=> documentation
@@ -204,11 +205,10 @@ here we asked console consumer to the beginning of the topic and tell us what th
 
 
 
-
+-------------------------------------------------------------------------------	
 
 ## Kafka Consumers in Group	
 
--------------------------------------------------------------------------------	
 
 	$ kafka-console-consumer.sh
 
@@ -347,28 +347,188 @@ relaunched the kafka consumer with group name after message is produced, and it 
 		ijkl
 		efgh
 
+-------------------------------------------------------------------------------	
 
 	
 ## Kafka Consumer Group ClI	
 
+List all consumer groups, describe a consumer group, delete consumer group info, or reset consumer group offsets.
+
+	$ kafka-consumer-groups.sh
+
+	$ kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
+		my-firstapplication
+		my-second-application
+
+When no consumer is working:
+
+group my-second-application
+
+	$ kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-second-application
+	
+		Consumer group 'my-second-application' has no active members.
+		
+		GROUP                 TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+		my-second-application first_topic     0          10              10              0               -               -               -
+		my-second-application first_topic     1          11              11              0               -               -               -
+		my-second-application first_topic     2          11              11              0               -               -               -
+
+
+group my-firstapplication
+
+	$ kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-firstapplication
+	
+		Consumer group 'my-firstapplication' has no active members.
+		
+		GROUP               TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+		my-firstapplication first_topic     0          10              10              0               -               -               -
+		my-firstapplication first_topic     1          11              11              0               -               -               -
+		my-firstapplication first_topic     2          11              11              0               -               -   
+
+above we can see each group is reading from all available partition and maintaining there offset, they also maintain group is "lagging" how many message on each group's partition.
+
+
+
+When there is active consumer with group:
+
+	$ kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-second-application
+	
+		GROUP                 TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                           HOST            CLIENT-ID
+		my-second-application first_topic     0          10              10              0               consumer-my-second-application-1-629abf8c-fe3d-4f69-9551-a0e060238ad4 /127.0.0.1      consumer-my-second-application-1
+		my-second-application first_topic     1          11              11              0               consumer-my-second-application-1-629abf8c-fe3d-4f69-9551-a0e060238ad4 /127.0.0.1      consumer-my-second-application-1
+		my-second-application first_topic     2          11              11              0               consumer-my-second-application-1-629abf8c-fe3d-4f69-9551-a0e060238ad4 /127.0.0.1      consumer-my-second-application-1
+
+
 -------------------------------------------------------------------------------	
 
+## Resetting Offsets	
+
+	$ kafka-consumer-groups.sh
+
+**to-earliest**
+	
+	$ kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --group my-firstapplication --reset-offsets --to-earliest
+		WARN: No action will be performed as the --execute option is missing.In a future major release, the default behavior of this command will be to prompt the user before executing the reset rather than doing a dry run. You should add the --dry-run option explicitly if you are scripting this command and want to keep the current default behavior without prompting.
+	One of the reset scopes should be defined: --all-topics, --topic.
 
 
 
-
-## Kafka Console producer ClI	
-
--------------------------------------------------------------------------------	
-
-
-
-
-
+	$ kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --group my-firstapplication --reset-offsets --to-earliest --execute
+		One of the reset scopes should be defined: --all-topics, --topic.
 
 	
+	$ kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --group my-firstapplication --reset-offsets --to-earliest --execute --topic first_topic
+
+		GROUP                          TOPIC                          PARTITION  NEW-OFFSET     
+		my-firstapplication            first_topic                    0          0              
+		my-firstapplication            first_topic                    1          0              
+		my-firstapplication            first_topic                    2          0   
 	
 
+Now, if we restart our consumer, we will see all the data again:	
+	
+	$ kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-firstapplication
+		hello amit
+		fun learning!
+		play 123
+		how 
+		orange
+		hello
+		where r u
+		orange
+		maroon
+		abcd
+		learning kafka
+		just for fun
+		play
+		test 123
+		bue
+		how r u
+		red
+		green
+		aqua
+		rekjhgkjfgk
+		ijkl
+		awesome kafka
+		just message
+		some message that is acked
+		hi how are you
+		hello new consumer
+		test 1
+		red
+		green
+		blue
+		yellow
+		efgh
+			
+
+After starting consumer with group we can see like below, lagging will be 0.
+
+	$ kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --describe --group my-firstapplication 
+	
+		GROUP               TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                         HOST            CLIENT-ID
+		my-firstapplication first_topic     0          10              10              0               consumer-my-firstapplication-1-f2942403-be0a-4e1d-a507-d5976ebe9b4d /127.0.0.1      consumer-my-firstapplication-1
+		my-firstapplication first_topic     1          11              11              0               consumer-my-firstapplication-1-f2942403-be0a-4e1d-a507-d5976ebe9b4d /127.0.0.1      consumer-my-firstapplication-1
+		my-firstapplication first_topic     2          11              11              0               consumer-my-firstapplication-1-f2942403-be0a-4e1d-a507-d5976ebe9b4d /127.0.0.1      consumer-my-firstapplication-1
+
+
+
+### to get another option of reset lets play with the documentation:
+
+	$ kafka-consumer-groups.sh	
+
+
+**shift-by 2**
+
+	
+	$ kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --group my-firstapplication --reset-offsets --shift-by 2 --execute --topic first_topic
+		[2021-04-20 00:32:57,537] WARN New offset (12) is higher than latest offset for topic partition first_topic-0. Value will be set to 10 (kafka.admin.ConsumerGroupCommand$)
+		[2021-04-20 00:32:57,538] WARN New offset (13) is higher than latest offset for topic partition first_topic-1. Value will be set to 11 (kafka.admin.ConsumerGroupCommand$)
+		[2021-04-20 00:32:57,538] WARN New offset (13) is higher than latest offset for topic partition first_topic-2. Value will be set to 11 (kafka.admin.ConsumerGroupCommand$)
+		
+		GROUP                          TOPIC                          PARTITION  NEW-OFFSET     
+		my-firstapplication            first_topic                    0          10             
+		my-firstapplication            first_topic                    1          11             
+		my-firstapplication            first_topic                    2          11  	
+**shift-by -2**	
+
+	$ kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --group my-firstapplication --reset-offsets --shift-by -2 --execute --topic first_topic
+	
+		GROUP                          TOPIC                          PARTITION  NEW-OFFSET     
+		my-firstapplication            first_topic                    0          8              
+		my-firstapplication            first_topic                    1          9              
+		my-firstapplication            first_topic                    2          9 
+
+we can shift forward or backward kafka console consumer group offset.
+
+if we start consumer like below in another terminal, we should able to see 6 messages. so it did shift 2 offset on each partition.
+	
+	$ kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-firstapplication
+		maroon
+		abcd
+		rekjhgkjfgk
+		ijkl
+		yellow
+		efgh
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
