@@ -56,6 +56,10 @@ Open a new terminal and run below commands to confirm:
 			change to: dataDir=/home/amit/kafka_2.13-2.7.0/data/kafka
 		$ kafka-server-start.sh			=> for successfull start check logs for "[KafkaServer id=0] started"
 
+or
+
+		$ bin/kafka-server-start.sh config/server.properties
+
 **Important:** For the rest of the course, don't forget to add the extension .sh to commands being run
 
 **open a new tab and run below commands:**
