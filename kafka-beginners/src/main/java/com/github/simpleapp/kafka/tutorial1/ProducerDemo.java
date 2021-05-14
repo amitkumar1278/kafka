@@ -7,6 +7,10 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
 
+/**
+ * https://kafka.apache.org/documentation/#producerconfigs
+ */
+
 public class ProducerDemo {
     public static void main(String[] args) {
         System.out.println("Hello world");
