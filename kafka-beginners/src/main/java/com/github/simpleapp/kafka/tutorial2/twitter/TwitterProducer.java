@@ -18,14 +18,16 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+/**   Follow the quick start of and copy msgQueue: https://github.com/twitter/hbc         */
 public class TwitterProducer {
 
     Logger logger = LoggerFactory.getLogger(TwitterProducer.class.getName());
 
-    String consumerKey = "";
-    String consumerSecret = "";
-    String token = "";
-    String secret = "";
+    String consumerKey = "uHeDmSuM7U0JHKJHKHHUYDVjQdU67TfVUUL2";  // API Key
+    String consumerSecret = "pTV5iBOc4jpSX8PhQOA5UOIUSPDHFDSJNFNCWJEHFEWJHSIzcKMg9klCNcOv5bDXKN24LY5DoME"; // API Secret Key
+    String bearerToken = "AAAAAAAAAAAAAAAAAAAAANatPwEAAAAAXDWN%2BZrR6k3l%2FCDDkKNz9vwiY%2Fw%3DTf15ctuz6hVzVFyyZU9nXYsRzo0T3DrGCN7YChZteoeseV25sC"; // Bearer Token
+    String token = "1317060962-ISWgK7uNWhSU6o6uj4lVmCezlybPHbRNqUYUYUYUIY3UZpSY"; // Access Token
+    String secret = "587A79du9IHZLwJprGsg5I9PfdXjaDHjAVKOIUYUOYUOUOUOUOmt"; // Access Token Secret
 
     public TwitterProducer() {
     }
@@ -78,7 +80,7 @@ public class TwitterProducer {
         Hosts hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
         StatusesFilterEndpoint hosebirdEndpoint = new StatusesFilterEndpoint();
 
-        List<String> terms = Lists.newArrayList("kafka", "api");
+        List<String> terms = Lists.newArrayList("australia", "api");
         hosebirdEndpoint.trackTerms(terms);
 
         // These secrets should be read from a config file
