@@ -2,23 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>kafka-beginners</artifactId>
+        <groupId>com.kafka.basic</groupId>
+        <version>1.0</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.kafka.basic</groupId>
-    <artifactId>kafka-beginners</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0</version>
-    <modules>
-        <module>kafka-basics</module>
-        <module>kafka-producer-twitter</module>
-        <module>kafka-consumer-elasticsearch</module>
-    </modules>
+    <artifactId>kafka-consumer-elasticsearch</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-
-
 
 </project>
