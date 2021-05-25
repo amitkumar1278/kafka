@@ -1,4 +1,4 @@
-package com.github.simpleapp.kafka.tutorial2.twitter;
+package akg.kafka.tutorial2.twitter;
 
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
@@ -43,8 +43,8 @@ public class TwitterProducer {
 
     public void run() {
 
-        /** Set up your blocking queues: Be sure to size these properly based on expected TPS of your stream */
-        BlockingQueue<String> msgQueue = new LinkedBlockingQueue<String>(1000);
+        // Set up your blocking queues: Be sure to size these properly based on expected TPS of your stream
+        BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>(1000);
 
         // Create a twitter client
         Client client = createTwitterClient(msgQueue);
@@ -96,9 +96,9 @@ public class TwitterProducer {
 
 
     public Client createTwitterClient(BlockingQueue<String> msgQueue) {
-        /**   Follow the quick start of and copy msgQueue: https://github.com/twitter/hbc         */
+        //  Follow the quick start of and copy msgQueue: https://github.com/twitter/hbc
 
-        /** Declare the host you want to connect to, the endpoint, and authentication (basic auth or oauth) */
+        // Declare the host you want to connect to, the endpoint, and authentication (basic auth or oauth) */
         Hosts hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
         StatusesFilterEndpoint hosebirdEndpoint = new StatusesFilterEndpoint();
 
@@ -115,9 +115,7 @@ public class TwitterProducer {
                 .endpoint(hosebirdEndpoint)
                 .processor(new StringDelimitedProcessor(msgQueue));
 
-        Client hosebirdClient = builder.build();
-
-        return hosebirdClient;
+        return builder.build();
     }
 
 
@@ -145,7 +143,7 @@ public class TwitterProducer {
         //properties.setProperty(ProducerConfig., "");
 
         // Create Producer
-        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+        KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
         return producer;
     }
 
