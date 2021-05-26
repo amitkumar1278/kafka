@@ -28,6 +28,7 @@ public class ElasticSearchClient
 
     public static RestHighLevelClient createClient(){
 
+        // Created Cluster at : https://app.bonsai.io/clusters/kafka-course-8513360256/console
         // Replaced with your own credentials
         String hostname = "kafka-course-8513360256.ap-southeast-2.bonsaisearch.net";
         String username = "7d5hbnex93";

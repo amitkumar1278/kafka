@@ -1,5 +1,6 @@
 package akg.kafka.tutorial3;
 
+import com.google.gson.JsonParser;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -26,7 +27,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 
-public class ElasticSearchConsumer
+public class ElasticSearchConsumerIdompotence
 {
 
     public static RestHighLevelClient createClient(){
@@ -75,27 +76,35 @@ public class ElasticSearchConsumer
 
     public static void main(String[] args) throws IOException {
 
-        Logger logger = LoggerFactory.getLogger(ElasticSearchConsumer.class.getName());
+        Logger logger = LoggerFactory.getLogger(ElasticSearchConsumerIdompotence.class.getName());
         RestHighLevelClient client = createClient();
         KafkaConsumer<String, String> consumer = createConsumer("twitter_tweets");
 
         while(true){
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
 
+            // where we insert data into elasticsearch
             for(ConsumerRecord<String, String> record : records){
-                // where we insert data into elasticsearch
-                IndexRequest indexRequest = new IndexRequest("twitter", "tweets")
+
+                // There is 2 strategies to create id
+                // 1. Kafka Generic id: this we can do when we can't find id
+                // String id = record.topic() + "_" +record.partition() + "_" + record.offset();
+
+                // 2. twitter feed specific id
+                String id = extractIdFromTweet(record.value());
+
+                // passing id here to make our consumer idempotent
+                IndexRequest indexRequest = new IndexRequest("twitter", "tweets", id)
                         .source(record.value(), XContentType.JSON);
 
                 IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
-                String id = indexResponse.getId();
-                logger.info(id);
+                logger.info(indexResponse.getId());
+
                 try {
                     Thread.sleep(1000); // introduce small delay
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
 
                 // To verify, if the tweets of above/logged id is inserted or not to the elastic search cluster, please run below query:
                 // Query: GET /twitter/tweets/{id from console}
@@ -107,5 +116,16 @@ public class ElasticSearchConsumer
 
         // close the client gracefully
        // client.close();
+    }
+
+    private static JsonParser jsonParser = new JsonParser();
+
+    private static String extractIdFromTweet(String tweetJson) {
+
+        // gson library
+       return  jsonParser.parse(tweetJson)
+                .getAsJsonObject()
+                .get("id_str")
+                .getAsString();
     }
 }
