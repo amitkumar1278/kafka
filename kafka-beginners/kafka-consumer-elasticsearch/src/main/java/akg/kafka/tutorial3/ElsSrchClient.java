@@ -6,9 +6,6 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -20,10 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Properties;
 
-public class ElasticSearchClient
+public class ElsSrchClient
 {
 
     public static RestHighLevelClient createClient(){
@@ -55,7 +50,7 @@ public class ElasticSearchClient
 
     public static void main(String[] args) throws IOException {
 
-        Logger logger = LoggerFactory.getLogger(ElasticSearchClient.class.getName());
+        Logger logger = LoggerFactory.getLogger(ElsSrchClient.class.getName());
         RestHighLevelClient client = createClient();
         String jsonString = " {\"foo\": \"bar\"}";
 

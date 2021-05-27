@@ -26,7 +26,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 
-public class ElasticSearchConsumer
+public class ElsSrchCnsmr
 {
 
     public static RestHighLevelClient createClient(){
@@ -75,7 +75,7 @@ public class ElasticSearchConsumer
 
     public static void main(String[] args) throws IOException {
 
-        Logger logger = LoggerFactory.getLogger(ElasticSearchConsumer.class.getName());
+        Logger logger = LoggerFactory.getLogger(ElsSrchCnsmr.class.getName());
         RestHighLevelClient client = createClient();
         KafkaConsumer<String, String> consumer = createConsumer("twitter_tweets");
 
