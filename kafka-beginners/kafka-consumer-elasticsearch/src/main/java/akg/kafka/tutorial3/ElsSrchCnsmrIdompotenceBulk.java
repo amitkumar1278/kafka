@@ -13,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -68,7 +69,7 @@ public class ElsSrchCnsmrIdompotenceBulk
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false"); // disable auto commit of offsets
-        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "10"); // disable auto commit of offsets
+        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "100"); // disable auto commit of offsets
 
         // create consumer
         KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
@@ -76,6 +77,16 @@ public class ElsSrchCnsmrIdompotenceBulk
         return consumer;
     }
 
+    private static JsonParser jsonParser = new JsonParser();
+
+    private static String extractIdFromTweet(String tweetJson) {
+
+        // gson library
+        return  jsonParser.parse(tweetJson)
+                .getAsJsonObject()
+                .get("id_str")
+                .getAsString();
+    }
 
     public static void main(String[] args) throws IOException {
 
@@ -86,47 +97,52 @@ public class ElsSrchCnsmrIdompotenceBulk
         while(true){
 
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
-            logger.info("\n\nReceived: " + records.count() + " records");
-
+            Integer recordCount = records.count();
+            logger.info("\n\nReceived: " + recordCount + " records");
             BulkRequest bulkRequest = new BulkRequest();
 
-            // where we insert data into elasticsearch
             for(ConsumerRecord<String, String> record : records){
-
-                String id = extractIdFromTweet(record.value());
-                IndexRequest indexRequest = new IndexRequest("twitter", "tweets", id)
-                        .source(record.value(), XContentType.JSON);
-                bulkRequest.add(indexRequest); // we add to our
-
-                IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
-                logger.info(indexResponse.getId());
-
                 try {
-                    Thread.sleep(10); // introduce small delay
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    String id = extractIdFromTweet(record.value());
+                    IndexRequest indexRequest = new IndexRequest("twitter", "tweets"
+                            , id // this is to make our consumer idempotent
+                    ).source(record.value(), XContentType.JSON);
+                    bulkRequest.add(indexRequest); // we add to our bulk request (takes no time)
+                }catch (NullPointerException e){
+                    logger.warn("Skipping bad data: " + record.value());
                 }
             }
 
-            logger.info("Committing offsets...");
-            consumer.commitSync();
-            logger.info("Offsets have been committed.");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if(recordCount > 0) {
+                BulkResponse bulkItemResponses = client.bulk(bulkRequest, RequestOptions.DEFAULT);
+
+                logger.info("Committing offsets...");
+                consumer.commitSync();
+                logger.info("Offsets have been committed.");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                // 1. to verify if our consumer have correct offset, use below command in terminal.
+                //  amit@amit-Lenovo-ideapad-520-15IKB:~/kafka_2.13-2.7.0$ kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --group kafka-demo-elasticsearch --describe
+
+                // 2. if you want to reset offset, use below:
+                // amit@amit-Lenovo-ideapad-520-15IKB:~/kafka_2.13-2.7.0$ kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --group kafka-demo-elasticsearch --reset-offsets --execute --to-earliest --topic twitter_tweets
+                //
+                //GROUP                          TOPIC                          PARTITION  NEW-OFFSET
+                //kafka-demo-elasticsearch       twitter_tweets                 3          0
+                //kafka-demo-elasticsearch       twitter_tweets                 0          0
+                //kafka-demo-elasticsearch       twitter_tweets                 4          0
+                //kafka-demo-elasticsearch       twitter_tweets                 5          0
+                //kafka-demo-elasticsearch       twitter_tweets                 2          0
+                //kafka-demo-elasticsearch       twitter_tweets                 1          0
+
+                // so now for each partition new-offset is set to 0, i.e. beginning of the topic
+
             }
         }
     }
 
-    private static JsonParser jsonParser = new JsonParser();
-
-    private static String extractIdFromTweet(String tweetJson) {
-
-        // gson library
-       return  jsonParser.parse(tweetJson)
-                .getAsJsonObject()
-                .get("id_str")
-                .getAsString();
-    }
 }

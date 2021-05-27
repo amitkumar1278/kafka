@@ -122,7 +122,7 @@ public class ElsSrchCnsmrIdompotence
         }
 
         // to verify if our consumer have correct offset, use below command in terminal.
-        //  amit@amit-Lenovo-ideapad-520-15IKB:~/kafka_2.13-2.7.0$ kafka-consumer-groups.sh --bootstrap-server 120.0.0.1:9092 --group kafka-demo-elasticsearch --describe
+        //  amit@amit-Lenovo-ideapad-520-15IKB:~/kafka_2.13-2.7.0$ kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --group kafka-demo-elasticsearch --describe
     }
 
     private static JsonParser jsonParser = new JsonParser();
