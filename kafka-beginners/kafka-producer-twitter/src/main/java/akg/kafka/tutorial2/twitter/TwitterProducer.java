@@ -26,11 +26,11 @@ public class TwitterProducer {
 
     Logger logger = LoggerFactory.getLogger(TwitterProducer.class.getName());
 
-    String consumerKey = "uHeDmSuM7U0JHKJHKHHUYDVjQdU67TfVUUL2";  // API Key
-    String consumerSecret = "pTV5iBOc4jpSX8PhQOA5UOIUSPDHFDSJNFNCWJEHFEWJHSIzcKMg9klCNcOv5bDXKN24LY5DoME"; // API Secret Key
+    String consumerKey = "uHeDmSuM7U0VjQdU67TfVUUL2";  // API Key
+    String consumerSecret = "pTV5iBOc4jpSX8PhQOA5SIzcKMg9klCNcOv5bDXKN24LY5DoME"; // API Secret Key
     String bearerToken = "AAAAAAAAAAAAAAAAAAAAANatPwEAAAAAXDWN%2BZrR6k3l%2FCDDkKNz9vwiY%2Fw%3DTf15ctuz6hVzVFyyZU9nXYsRzo0T3DrGCN7YChZteoeseV25sC"; // Bearer Token
-    String token = "1317060962-ISWgK7uNWhSU6o6uj4lVmCezlybPHbRNqUYUYUYUIY3UZpSY"; // Access Token
-    String secret = "587A79du9IHZLwJprGsg5I9PfdXjaDHjAVKOIUYUOYUOUOUOUOmt"; // Access Token Secret
+    String token = "1317060962-ISWgK7uNWhSU6o6uj4lVmCezlybPHbRNq3UZpSY"; // Access Token
+    String secret = "5JEb0fFv887A79du9IHZLwJprGsg5I9PfdXjaDHjAVKmt"; // Access Token Secret
 
     List<String> terms = Lists.newArrayList("bitcoin", "usa", "politics", "sport");
 
